@@ -1,0 +1,1891 @@
+Windows用户： C:WINDOWS/system32/drivers/etc 目录下修改外网
+
+注：在函数面前添加关键字async和await分别对应异步和同步，ES7提供,前者将同步转为异步，后者将异步转为同步
+
+cmd输入ipconfig查看自己电脑的ip地址  将ip地址给别人再加上端口号就能让别人访问服务器上的内容了
+
+
+npm 常用命令
+    npm init        初始化packjon目录
+    npm install     下载模块
+    npm uninstall   卸载模块
+    npm update      更新模块
+    npm ls          查看安装的模块
+    npm root        查看模块安装路径
+    npm config      管理npm配置路径
+    npm list -g     查看安装的模块
+    
+    npm view webpack versions		//查看webpack发行至今的所有版本
+    npm list -g --depth 0		查看全局安装的包
+    npm list 插件名字 -g 		// 查看全局的插件信息
+    npm  ls				查看安装的包
+    npm init        初始化packjon目录
+    npm install     下载模块
+    npm uninstall   卸载模块
+    npm update      更新模块
+    npm ls          查看安装的模块
+    npm root        查看模块安装路径
+    npm config      管理npm配置路径
+    npm list -g     查看安装的模块
+
+
+
+
+
+nide.JS不是一门语言，也不是框架  他是一个运行环境，可以解析JS代码，让JS脱离浏览器运行
+    服务端不操作DOM和BOM，只有ECMAscrirpt：
+    if，var，function，object，Array这些
+
+
+主要功能：
+    1，web服务器后台
+    2，命令行工具
+对于开发来说，自己写的代码很少。大部分是引入别人开发的第三方模块
+
+
+文件操作
+    readfile('url'.(err,res)=>{})：读取文件
+    writeFile((err,res)=>{})：写入文件
+
+    
+    扩展：node中除了requir和exports模块相关api之外，还有两个特殊成员
+    1，__dirname    获取绝对路径，当前文件所属目录的绝对路径
+    2,__filename    获取当前文件的绝对路径
+
+
+
+服务器流程：发请求，接受请求，处理请求，给出反馈
+
+    server.on(request,(req,res)=>{                  //绑定request事件，服务器收到请求就会调用回调函数进行反馈
+        .....请求代码
+        res.write(响应代码。。)
+        res.write(响应代码。。)
+        res.end()                   //可以有多个响应，但是最后要有一个end表示响应完成，或者将所有响应代码都写到end中
+        rs.end(响应代码。。。)
+    })
+    server.listen(3000)
+
+
+    res.write：给客户端发响应
+        响应给客户端内容，但是最后要使用end来结束响应
+    
+
+    服务器响应给客户端的代码是乱码状态，想要正常设置编码格式，在响应内容之前设置编码格式
+    res.setHeader('content-type','text/html;charset=utf-8');                        //设置编码格式
+
+
+
+
+
+根据不同路径返回不同数据(url模块)
+    const http=require('http')
+    const url=require('url')
+    const app=http.createServer()
+    app.on('request',(req,res)=>{
+        var pathname=url.parse(req.url).pathname
+        if(pathname'/'||pathname='/index'){
+            res.end(这是首页)
+        }
+        else if(pathname=='login'){
+            res.end(这是注册页面)
+        }else{
+            res.end(请求页面不存在，检查地址信息)
+        }
+    })
+
+
+    
+node的模块
+    核心模块：fs,
+        path:
+        path.basename(path,[.ext])          传递文件路径返回文件名，可选参数是文件后缀
+        path.dirname(path)                  传递文件路径返回文件当前目录
+        path.extname(path)                  获取文件扩展名
+        path.join(..path)                         将传入的参数进行拼接成一个完整路径
+        path.parse(path)                    总结方法，将传递的路径解析拆分为一个个对象(后缀，跟目录，文件名等)
+        更多查nodejs文档
+
+
+        第三方模块：
+    自定义模块：
+        建议：查nodejs.org官网
+
+
+加载别的文件也是使用require
+    使用require('./xx./xxx.js')        加载这个文件下的js文件
+    加载顺序是进入路径下执行完毕退到当前文件再执行接下来的代码
+    node中只有模块作用域，也就是加载的模块里面有变量和当前模块重名，并不会像浏览器一样覆盖，而是各是个的
+
+
+但是引入模块并不是要执行里面的代码就不管了，大多数是需要模块里面的成员
+    这是将需要使用的成名对外暴露，使用和require相对的代码
+
+    exports.暴露对象          像外部暴露成员或方法让别的模块使用
+
+
+
+向客户端响应服务端的html页面：
+    var url=res.url;
+    if(url=='/'){
+        fs.readfile('./xxx.html',(error,date)=>{
+            if(date){
+                res.setHeader('content-type','text/html;charset=utf-8'); 
+                res.end(date);
+            }
+        })
+    }
+
+服务器就能向客户响应html文件了。响应css，js文件同理
+    多一个文件或文件夹就写一个判断浪费资源，使用统一判断来定位到文件
+
+    var dir='./xxx/yyy/zzz';                //提前写好路径
+    var url=req.url;
+    var relpath='index.html';
+    if(url!=='/'){
+        relpath=url;
+    }
+    fs.readfile('dir+relpath',(err,date)=>{         //在读取文件的时候将提前开放的路径拼接上去
+        if(err){
+            return  res.end(404);
+        }
+        res.end(date);
+    })
+
+
+
+
+
+
+在node中和浏览器不一样。浏览器中可以通过script标签将模板引擎引进啦，而node不行，得通过require加载
+
+art-template包 服务端渲染
+    为js文件提供模板，使用步骤
+    1，npm install art-tempalate 下载模板
+    2，在需要的使用的文件模块中require加载模板
+    3，查文档，使用模板引擎的API 对文件进行渲染
+
+本质是字符串的解析替换，file读取到文件，调用tostring方法转成字符串。套用模板进行替换完成后再传给客户端
+模板替换使用var str=template.render(date.tostring(),{
+    title:'123'
+})
+
+使用方法：template.render('模板字符串',替换对象)
+
+示例：
+    fs.readfile('./tem.html',(err,date)=>{
+        if(err){
+            return console.log(err)
+        }
+        template.render(date.toString(),{    //由于读取文件返回的是二进制数据，模板引擎使用的是字符串，所以转换字符串
+            name:xxx,
+            age:24,
+            job:yyy
+        })
+    })
+
+
+
+
+
+
+服务端渲染和客户端渲染小知识
+    服务端渲染，比如一些时候网速不好的时候在淘宝京东买东西上面的商品信息半天才出来。这就是服务端渲染
+    而一些不重要的信息像用户评价评论等不需要被爬虫爬到的就是客户端渲染。
+
+
+
+
+
+
+响应网页问题：页面中有src引入操作或者link，img标签等，此时引入的这个网页会再次发起新的请求
+    这种统一叫做静态资源，对于这些静态资源。将其放到一个公共文件夹，当发起请求的时候直接在这个文件夹获取文件资源
+    当收到以/public开头的，就当作是在请求公共资源，将请求路径当作文件路径来处理读取
+    示例：
+        if(url.indexOf('/public/'==0)){
+            fs.readFile('.'+url,(err,date)=>{           //拼上.代表资源在当前目录下的public文件夹里，上级目录就拼..
+                if(err){
+                    return res.end(资源不存在)
+                }
+                res.end(date)
+            })
+        }
+
+
+
+获取数据两种方式：get/post
+    get：node提供了url模块下的parse方法，通过该方法拿到传递过来的数据.query/.pathname等
+
+    post：post比较特殊，无法在地址上直接拿到数据。而是通过引入第三方模块body-parser来把数据解析好放到body属性里面
+        再直接点出body属性值拿到数据内容
+
+
+
+
+页面里的跳转标签统一改成/xxx，方便简洁。跳转的时候就由服务器后台的url检测而跳转
+比如首页跳转就不用写一串网址。直接href='/'，服务端检测到请求/的数据就执行跳转首页地址
+
+
+模板引擎使用：  （模板引擎默认目录是view）
+    定义母版
+    var temp={
+        name:xxx,
+        age:xxy,
+        sex:ddd
+    }
+
+    在html写好变量      {{ each conmp}}
+      {{ $value.name }}dasddadasda:{{ $value.age }}asdasd {{ $value.sex }}
+    {{ /each }}             //each是循环添加
+
+    服务器调用渲染模块  var strhtml=template.render(date.tostring(),{
+        temp:temp
+    })
+
+
+setHeader还有条实用属性：
+    1,setHeader('location','xxx') 重新跳转xxx地址  配合302重启状态码
+    res.stausCode=302;
+    res.setHeader('location','/') 
+    res.end()
+    使客户端重新跳转首页,更新首页数据
+
+浏览器只要发现302状态码就跳转location
+301     浏览器会记忆。a跳到b，下一次进入a的时候不发请求了。直接跳到b。
+302     不记忆  a跳到b  下一次进入a还发请求跳到b
+
+！！！！！！以上属于基层所以不方便，一般需要借助框架。所以express应运而生
+
+
+
+
+
+
+业务部分----------------------------------------------------------------------------------------------------------------
+node编写程序主要就是使用以下几个
+    1，核心模块
+    2，第三方模块
+    3，自己编写的模块
+    4，es语法
+
+
+
+模块对外导出是exports.add=add    //将add成员导出
+但是有时我们就希望导出的就是具体的方法。而不是将这个成员挂载到export上。就要使用(适用于单个成员)
+module.exports=add;             //将导出方法赋值给对外暴露出口，拿到的不是方法。不需要调用。require请求到的就是add方法
+
+
+
+
+
+
+express使用：
+    1，引包
+    2，创建服务器
+    3，创建路由
+    4，响应页面
+    5，监听端口
+    示例：
+        var express=require('express')
+        var app=express()
+        app.get('/inde',(req,res)={         //不用对路径进行判断，内部都判断好了，而且编码等问题也都处理好了
+            res.send('这是首页')
+        })
+        appp.use('/',(req,res)={
+            res.send()
+        })
+        app.listen()
+
+
+
+
+
+
+express：服务器的一个框架
+    原来从创建服务器操作在这里调用一下express()方法就可以了：
+    var http=express();
+
+    原来的请求操作等于get()方法;
+    http.get('/',(req,res)=>{
+        res.end('xxx);
+    })
+    http.listen(3000)
+    express也不用设置编码了，他会自动设置好编码
+
+
+
+
+
+    express公开目录使用/开放静态资源
+    http.use('/public/',express.static('./public/'))    //公开当前目录下的/public/目录  上级使用。。/
+    只要在地址栏输入文件路径就能直接访问文件。有了该方法，想公开哪个目录就换成哪个目录。
+
+
+    当第一个参数为空时，浏览器地址栏不要加public，直接写路径.默认就是public下
+    当第一个参数和公开文件名不一样时，可以认为这个参数是公开文件夹的别名
+
+
+在express中原来的api方法依然不变可以用，但是推荐使用express提供的。比较简便
+    响应代码res.end()推荐换为res.send()
+
+
+
+
+
+
+基本路由：
+    get：可以看作一个具体映射关系的表
+        比如：app.get('/',函数)
+        app.get('/ad',函数)
+        app.get('/da',函数)  这种形式也可以
+
+        当请求一个参数时，执行后面的函数。这就称为一个基本的路由
+    注：express的路由判断是不包括查询字符串部分的，即有查询字符串和无都是进入的同一个路由
+
+    
+
+
+在express中配置模板引擎（查阅github官方文档自行查阅）
+    1，安装：npm install art-template       --save
+    npm install express-art-template       --save
+
+    2，配置使用模板引擎：
+    app.engine('html',require('express-art-tempalate'))     //第一个参数是文件后缀名，只识别这个后缀的文件进行渲染
+
+    3,express为response提供了一个方法render:
+        res.render('404.html','{模板数据}')
+
+        第一个参数不能写路径(./404.html)，他默认去项目中的views目录中去查找模板文件
+            如果想修改默认路径，使用：app.set('views','修改后的路径')
+
+
+
+        express框架重定向简化直接使用res.redirect('/') 
+            重定向到'/'  不用写状态码和location了
+
+
+
+
+
+获取post请求数据
+    app.post('/',func(){..})    
+        express没有提供获取post请求的API，所以post请求的数据通过第三方插件来处理：
+        第三方模块body-parser
+        npm install body-parser --save
+
+
+    //配置插件
+    app.use(bodyParser.urlencoded({extended:false}))
+    app.use(bodyParser.json())
+
+    配置完后requset请求上会多出一个属性body，用来获取post请求体数据
+    res.send(JSON.stringify(req.body,null,2))
+
+	
+
+现在不需要第三方来实现，只需要配置
+
+app.use(express.json())
+app.use(express.urlencoded({
+    extended: true
+}))
+然后在拿参数的时候在req.body中拿就可以了
+
+
+路由模块的提取：
+    在分离开的页面暴露接口，然后在app页面接收接口，提取模块
+    示例：
+        var express=require('express')
+        var router=express.Router();
+            router.get('/',()=>{...})
+            router.get('/',()=>{...})
+            router.get('/',()=>{...})
+            router.get('/',()=>{...})
+        module.exports=router
+
+
+        引用路由的时候：把路由挂载到app服务中上
+            var router=reuqire('./router')
+            app.use(router)
+
+        整个过程类似放大模式
+
+
+
+
+故整个路程分为：
+    1，入口模块app.js           //负责创建服务，模板引擎，服务相关配置，挂载路由，启动监听，解析post表单
+    2，路由模块router，js         //处理app挂载的路由，设置处理函数
+    好处：模块职责单一。一个模块处理一个模块的事情
+
+
+
+但是分开之后有一个问题：当某个模块的数据在下一个模块使用时，异步无法当时拿到结果，拿到的只是空或undifind
+这种情况使用回调函数解决：
+    如：function fn(){
+        setTimeout(()=>{
+            var date='asdda';
+        },1000)
+    }
+
+    console.log(fn());    //根本拿不到date，只会是undifind。只能使用回调函数解决
+
+
+
+
+express中间件
+    注：即当一个请求进入中间件之后不调用next()，就会停留在当前中间件中，不会进入下一个中间件，只要不交出控制权
+    绝对不会进入下一个中间件，不管后面的中间件是否满足条件。
+
+    不限制请求路径中间件
+    app.use(req,res,next)   三个参数
+    本身是个方法：
+    参数1：请求对象
+    参数2：响应对象
+    参数3：下一个中间件
+
+    next是个函数，中间件执行调用next就会执行下一个中间件
+    如：app.use((req,res,next)=>{
+        console.log(1);
+        next();                 //这里不调用next不会执行下面的中间件输出2，只会输出1
+    })
+    app.use((req,res,next)=>{
+        console.log(2);     
+    })
+
+
+
+通过中间件，就可以自己来自定义404界面了
+
+
+
+
+    路径中间件：
+    以/xxx开头的，如：/ad
+    app.use('/ad',(req,res,next)=>{         //所有路径是/ad开头的都会进入判断如 /ad/asdad/asdada
+        console.log(1)                      //但是拿到的路径是不包括/ad的
+    })
+
+
+
+
+
+mongodb数据库：非关系型数据库(nosql)
+    所有关系型都需要sql语言来操作，在使用前也要设计表结构，并且支持约束(主键，非空，唯一)
+
+    而非关系型数据库比较灵活，有些就只有键值对
+    而mongodb是最像关系型数据库的非关系数据库。(数据库=>数据看库，数据表=>集合，表记录=>文档对象)
+    mongo也不需要设计表结构
+
+
+原生操作太过繁琐和困难。使用第三方包mongoose来操作数据库
+    官方网址操作指引：mongoosejs.com
+    简单示例：
+        //连接上本地数据库text
+        mongoose.connect('mongodb://localhost/text',{useMongclient:true})
+        //创建数据库模型
+        mongoose.Promise=global.Promise
+        //创建一个实例
+        var kitty=new Cat({name:name1})
+        //将这个实例保存
+        kitty.save((err)=>{
+            if(err){
+                return console.log(数据保存失败)
+            }
+            console.log(保存成功)
+        })
+
+增删改查
+$or 或关系
+$nor 或关系取反
+$gt 大于
+$gte 大于等于
+$lt 小于
+$lte 小于等于
+$ne 不等于
+$in 在多个值范围内
+$nin 不在多个值范围内
+$all 匹配数组中多个值
+$regex 正则，用于模糊查询
+$size 匹配数组大小
+$maxDistance 范围查询，距离（基于LBS）
+$mod　　　　 取模运算
+$near 邻域查询，查询附近的位置（基于LBS）
+$exists 字段是否存在
+$elemMatch 匹配内数组内的元素
+$within 范围查询（基于LBS）
+$box 范围查询，矩形范围（基于LBS）
+$center 范围醒询，圆形范围（基于LBS）
+$centerSphere 范围查询，球形范围（基于LBS）
+$slice 查询字段集合中的元素（比如从第几个之后，第N到第M个元素
+
+
+
+上面示例代码简单而且灵活，但是通常我们需要对数据进行一些约束，否则遍历使用的时候根本没法使用。
+    mongoose提供了Schema方法来设计规则约束数据
+    示例：
+        var bokeschema=new Schema({
+        title:string,
+        author:string,
+        age:number,
+        //default是默认值
+        time:{type:Date,default:Date.now}
+    })
+
+
+
+    问题：这样没有约束，有可能接收到一些脏数据
+    约束条件
+    var userchema=new Schema({
+        username:{
+            type:string,
+            required：true,         //必须有这个数据，没有就报错
+        },
+        age:number,
+        sex：{
+            type:number,
+            enum:[0,1],                     //枚举，限定数据要么0要么1.
+            default:0                       //不给数据默认就是0
+        }
+        password:{
+            type:string,
+            required：true
+        }
+    })
+
+
+
+将文档结构发布为模型(将上述规则应用)
+    //参数一般传大写，返回值是模型对象，用变量接收后就可以随意操作数据
+    var User=mongoose.model('User',userSchema)
+
+
+    增加数据！！！
+    第四步：增加数据直接new实例就行了
+            var use=new User({
+                username:'张三',
+                age:18,
+                password:'123456'
+            })
+        //注意，以上数据库中并没有数据，必须将这个实例保存数据库中才会有数据
+        use.save()
+
+    总结为4步：1，连接本机/网上数据库   2，设定集合规则  3，将集合规则发布为模型  4，接收模型对象后对数据进行增删改查
+
+
+查询数据！！！
+    use.find((err,date)=>{
+        if(err){
+            conlole.log(查询失败，use数据库中没有数据)
+        }else{
+            console.log(date)           //数据就算只有一条也是个数组，数据不会有单个
+        }
+    })
+
+    按条件查询数据：
+        第一个参数传个对象，会按这个对象来进行查询
+        use.find({
+            username:zhangsan,
+            age:18
+        },(err,date)=>{
+            if(err){
+            conlole.log(查询失败，use数据库中没有数据)
+        }else{
+            console.log(date)           //数据就算只有一条也是个数组，数据不会有单个
+        }
+        })
+
+
+    因为find不管几条数据，都放到数组中，所以还有个方法findone
+    将find改成findone，其余不变，这样查到的就是个对象，他返回查询到的第一个数据
+
+
+
+    或条件查询：比如一个账户邮箱和用户名不允许重复。需要查询两个或两个以上的数据，不能写
+    findone({
+        email:xxx,
+        name:yyy        //这是且查询。一个用户的email和name要同时满足。而不是其中一个满足。查两次太多余
+    })
+    或查询$or示例：
+        use.findOne({
+            $or:[
+                {
+                    email:xxx
+                },
+                {
+                    name:yyy
+                }
+            ]
+        },callback)                    //功能，只要有数据的email等于xxx，或name等于yyy都会满足条件。而不用分两次查询
+
+    小缺点：由于是或查询，不好判断告诉用户是email已存在还是name已存在
+
+
+
+
+
+
+删除数据！！！
+    第一个和find类似的删除方法remove,根据条件来删除所有
+    use.remove({
+        username:'zhangsan',
+    },(err)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log(删除成功)
+        }
+    })
+
+    findOneAndRemove(条件，[option],callback)        根据条件删除一个， 语法一样
+
+    findByIdAndRemove(id,[option],callback)         根据id删除一个数据，语法也是一样
+
+
+修改数据！！！
+    1，根据id来修改数据
+    use.findByIdAndUpdate(id，{
+        username：'李四'
+    },(err,ret)=>{
+        if(err){
+            console.log(修改成功)
+        }else{
+            console.log(修改失败)
+        }
+    })
+
+
+//以上增删改查全部支持promis对象，即：use.find().then((date)=>{console.log(date)})
+
+
+
+
+
+扩展：使用node来操作mysql数据库
+    1，下载 npm install mysql
+    2，操作数据库
+        官方示例：
+            var mysql=require('mysql')
+            //创建连接
+            var connection=mysql.createConnection({
+                host:localhost,
+                user:'root'
+                password:'piaopiao'
+                database:'mydata-db'
+            });
+            //发起连接
+            connection.connect();
+            //对数据进行操作
+            connection.query('SELECT *FROM `mydata-db`',(err,ret,fie)=>{
+                if(err) throw error;
+                console.log('数据是：'ret[0])
+            });
+            //关闭数据库
+            connection.end()
+
+            //注：所有操作都是query这一个方法。。对数据的增删改查，如全字段插入数据。
+
+            connection.query(INSERT INTO mydata-db VALUES(null,"name","123456"),(err,ret,fie)=>{
+                if(err) throw error;
+                console.log('数据是：'ret[0])
+            })
+
+
+中间件一点补充：
+    无参数中间件：任何请求都会进入这个中间件，一般用来过滤操作
+        app.use(function()=>{....})
+        //此路由在第一个就任何请求都会进入他，而且如果这个路由没有交出控制权则后面所有路由都接收不到任何请求信息，都被拦截
+
+        错误中间件。当前面中间件调用next()方法传入参数时会直接进入到最后面的错误中间件处理错误，如
+        app.get( next(err))
+
+        直接进入app.use(function(err,req,res,next){
+            console.log(err)
+        })
+        注意：他直接会进入四个参数的错误处理，连404页面都不会进，即
+        app.use(function(req,res)=>{
+            res.render(404.html)
+        })
+
+
+
+
+项目开发技巧：
+    多个页面都有公共的头部和底部或者其他部分。将这些部分抽出来，然后使用模板引擎来继承和扩展
+    模板抽取：
+        {{ include './header.html'}}        在页面中此代码会被渲染成引入的html文件内的代码
+            将公共的地方放到这个文件让不同的页面使用公共部分
+
+    模板继承：
+        当多个网页大部分都是相同的，只有小部分或一块区域不同。这时再复制一份就多余了，使用继承就方便多了，也节约时间
+        步骤：
+            1，建立一个多个页面都公用的模板页
+            2，在每个页面不同的区域挖坑。
+            3，在不同页面继承这个模板页，然后将页面和其他页面不同的代码填充到这个坑
+            4，得到多个具有公共区域和自己独有代码区域的页面
+
+        挖坑使用{{block 'content'}} 这里是默认内容，不填坑就显示{{ /block}}
+        填坑使用也是使用block
+    示例：
+        {{ extend './moban.html'}}          //继承模板html
+        {{block 'content'}}                 //将模板html挖的坑填上自己独有的代码
+        <div>
+            <h1> 这是填坑内容 </h1>
+            </div>
+            {{ /block}}
+
+    作用：比如所有页面都需要引入css，js文件，都可以统一继承，然后再body里面挖坑扩展不一样的代码
+
+
+
+
+    服务端遇到一些表单需求或者交互会遇到发送数据的操作。比如用户ajax异步请求数据客户端回馈信息，这时要返回json字符串
+        手写json字符串太麻烦不太可能，express提供了一个响应方法就叫json，接收一个对象参数
+        return res.status(200).json({
+            success:false,
+            msg:'邮箱或name已存在'
+        })
+
+    补充：服务端端重定向对异步操作是无效的。也即是得客户端自己处理重定向问题，而不是交给后台处理
+        ajax({......
+        if(....){
+            window.location.href='/index'       //在客户端ajax异步这里进行重定向而不是服务端
+        }
+        })
+
+一些用户页面登录之后需要保存用户的登录状态，这时用到cookie和session技术。
+    express框架使用第三方模块express-session来引入
+    app.use(session({
+        secret:'aszawdasdawda'          //加密字符串，在凭证的基础上再次加密防止暴力破解。随便写
+        resave:false,
+        saveUninitialized:true          //为true时无论用不用session都给你分配凭证，改为false则只有使用session时才有
+    }))
+    配置好session之后就可以通过他来访问session成员
+    添加：req.session.use=xxx;          //添加一个名键值对为use和xxx的成员
+    访问：req.session.use
+    
+    提示：session默认内存存储，服务器一旦重启直接丢失，正常业务上线会把session进行持久化存储到数据库，不会登录一次换一个
+
+
+
+
+
+笔记2————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+整个内容大致分为：服务器端基础概念--创建web服务器--HTTP协议--HTTP请求与响应处理--node。js的工作原理
+
+
+
+node模块优点：
+    1，模块之间的引用不需要自己分析，只需要引入你需要的模块就行，至于你引入的模块依赖谁不需要你操心
+    2，模块之间是模块作用域，一个模块的变量无法访问另一个模块的变量
+    3，不同模块管理不同功能，方便维护和管理
+
+
+
+dos基本命令
+    dir                     列出当前所有目录
+    cd 目录名               进入所选目录
+    md  目录名              创建目录
+    rd  目录名              删除目录
+    del                     删除文件
+    echo on 文件名          创建文件
+    echo 内容>文件名        在文件中输入内容        //如果源文件有内容会被覆盖 改为>>则是追加。不会覆盖。只添加
+    cat  文件名             查看文件内容            
+
+目录
+    。          当前目录
+    。。        上一级目录
+
+
+进程：负责为程序的运行提供必备的环境
+
+线程；计算机中的最小计算单位，负责执行进程中的程序。。而JS是单线程
+
+
+使用node执行js文件
+    doc界面进入到文件目录，使用node  xxx.js
+
+
+以上命令记不住或者更换了就用help查看命令
+
+
+模块化开发
+    在a模块中创建好函数和变量，在结尾地方使用exports.的方式将创建好的函数和变量作为属性返回
+
+    当以后遇到b模块，c模块等需要依赖a模块时，使用require来引入a模块文件，通过变量来接收。
+    使用的时候通过这个变量来调用方法即可
+
+    注：expotrs和moudle.exports一般是等价的，前者是后者的别名。但是当指向地址发生变化时，以后者为准
+    即当一个模块前者和后者两个导出都出现时，以后者为准
+
+
+系统模块：称node运行环境提供的API为系统模块
+fs：文件操作系统：
+    fs.readFile(url,utf,callback) 读取文件操作
+        参数1：文件路径
+        参数2：文件编码     //可选
+        参数3：回调函数     //一般用于获取读取文件的结果
+
+        回调函数有两个参数，第一个是错误结果，第二个参数为结果，注：nodeJS一般情况下第一个参数都是错误结果。
+
+    示例：fs.readFile('../1.css','utf-8',(error,doc)=>{
+        if(error==null){
+            alert(doc);         //如果结果错误，则错误对象是个对象，反之为null。代表结果成功
+        }                       //注：无论失败成功，第一个error对象都存在，所以遇到需要将数据传入的时候，最好第一个传null代表错误对象，第二个再传doc
+    });
+
+
+
+    fs.writeFile(url,date,callback)     写入文件操作
+        url:要写入内容的文件地址，如果文件不存在就自动创建文件
+        date:字符串类型
+        callback：回调函数，成功error为null，失败为对象，不需要第二个参数，因为不拿数据
+
+
+
+系统模块path：不同系统的路径拼接 Linux系统文件分隔符是/，而window系统正反都可以。所以需要兼容
+    path.join('路径'，'路径'，。。。)
+    例；拼接abc，ade，ddd三个文件
+        var path=require('path');
+        var pa=path.join('abc','ade','ddd');
+        调用结果会根据系统自动拼接成相应的文件路径。
+    
+    相对路径，一般情况下是使用绝对路径，相对路径相对的是命令行的当前工作目录。所以一般是使用绝对路径
+
+    相对路径转绝对路径：__dirname（两个下划线）获取绝对路径后再将文件目录拼接上去
+
+
+
+
+
+第三方模块：又称为包。注：库文件一般项目下载。命令行工具一般全局下载
+    1，以js文件的形式存在，提供实现项目具体功能的API接口
+    2，以命令行工具形式存在
+
+    npm：获取第三方模块，node的第三方模块管理工具
+        下载：npm install 模块名称
+        卸载：npm uninstall package 模块名称
+
+
+
+    全局安装和本地安装。上述下载的属于本地安装
+        命令行工具：全局安装        //将模块安装到一个公共目录，让所有项目都能使用
+        库文件：本地安装            //下载到当前的项目中，供当前项目使用
+
+
+
+    nodemon：每次修改文件都要在命令行工具中重新执行该文件，而nodemon就是执行这个的
+
+
+    nrm:npm下载地址切换工具 使用nrm ls  来查看有哪些下载地址列表
+        nrm use 下载地址名称来切换下载地址  
+
+
+当没法下载nrm时可以直接通过下面配置方法来配置下载地址
+    npm get registry  查看当前下载镜像
+    npm config set registry http://registry.npm.taobao.org/  淘宝镜像
+    npm config set registry http://r.cnpmjs.org/    修改cnpmjs镜像
+    npm config set registry http://registry.npmjs.org/      修改为原始地址
+
+
+
+
+
+
+gulp模块：机械化的执行一些任务或者打包整理文件等等
+    使用：
+    1，npm install gulp  下载库文件
+    2,在要使用的项目根目录下建立gulpfile.js文件，src文件夹，dist文件夹
+    3，src文件夹储存源文件。dist文件夹会由gulp自动托管
+    4，一系列命令操作
+
+
+
+gulp任务方法：
+    gulp.src()              获取任务要处理的文件
+    gulp.dest()             输出文件                //对文件的操作是在内存中，操作完之后要将他输出到硬盘中
+    gulp.watch()            监控文件
+    gulp.task()             建立gulp任务，参数1：任务名  参数2，回调函数
+
+
+ 
+    例:const gulp =require('gulp');     引入模块
+
+        gulp.task('first',()=>{
+
+            //获取要处理的文件
+            gulp.src('../xx/yy/zz.css');
+
+            //将处理后的文件输出到dist目录
+            .pipe(gulp.dest('./dist/css'));
+        })
+    gulp.watch()            //监控文件
+    注：对文件的处理代码写在pipe()里面，这是硬性要求.
+
+    gulp任务的执行提供了一个命令行工具gulp-cli。下载后来执行gulp任务使用gulp 任务名就可以执行任务了
+
+    当代码编写完毕，任务过多时，构建一个任务，运行这个构建任务就运行所有任务，省的一个一个的启动任务
+    gulp.task('default',[任务1，任务2，任务3......])
+    注：当构建任务名为default时，运行时只要输gulp就行了，可以省略default，但是用其他构建任务名不行
+
+
+
+gulp本身没有多少方法，大部分功能是基于插件而实现的
+    gulp-babel:          将ES6语法转化为ES5
+    gulp-less：          将less语法转化为css语法
+    gulp-file-include    代码公共部分插入
+    .。。-less：         转换less语法
+         -csso           压缩css代码
+         -htmlmin        压缩html代码
+         -uglify         压缩js代码
+
+    gulp插件太多，记住命令不现实，只需要知道插件名字就行了，使用的时候去文档查api,根据他的说明直接复制粘贴用就行了
+
+公共文件提取流程：
+    1，新建一个单独文件，将公共代码复制粘贴进去，
+    2，将原文件代码公共部分删除，在删除的地方写入@@include('公共文件路径')就可以了
+
+
+
+
+node_modules文件夹的问题
+    1，文件夹以及文件过多过碎，当我们将项目拷贝给别人的时候传输速度会很慢
+    2，复杂的模块关系要被记录，确保模块的版本号和当前保持一致，否则容易报错
+
+
+    package.json:记录了当前项目依赖了哪些模块
+    使用npm init -y 快速初始化目录，生成package.json文件
+    传递文件的时候也不用传递module文件，而是传递根目录下的package.json文件让他自己下载第三方模块，防止文件过大传输慢
+
+    比如gulp在开发时需要，但是线上运行的时候用户是不需要这个模块的，所以保存到目录：
+    npm install gulp --save-dev         开发时用此命令下载保存到项目里，json目录文件就会在开发依赖中存储信息
+    将开发依赖和项目依赖分开。
+
+
+
+
+    模块间的依赖关系
+        项目依赖：项目本身运行所必须的模块，如JQuery，vue等。使用npm install 包名下载会添加到json的dependencies字段中
+        开发依赖：开发过程中辅助项目开发的模块，项目上线并不需要。比如gulp。项目上线有没有都无所谓
+            使用npm install 包名 --save-dev会添加到json文件的devDependencies字段中
+
+        当别人把项目传递过来的时候就可以选择两种下载方式：
+        1，npm install                  开发情况下载所有项目包含模块
+        2，npm install --production     只下载项目运行所需要的模块。
+
+
+        当下载模块的时候，会在package-lock.json中记录每个模块之间的依赖关系和详细信息，防止用户下载最新模块导致运行失败
+            并且存储了地址等信息，加快下载速度。
+
+
+
+        package。json属性：    
+        文件别名scripts：声明一个别名，使用别名一样能调用文件：比如：nodemon模块的js文件
+            'build':'nodemon app.js'
+            正常执行： nodemon app.js         
+            别名执行：npm run build   
+            //这里看不出来太大区别，但是当文件不是nodemon app.js而是很长一串时别名的作用就体现出来了
+
+
+
+
+
+nodeJS模块加载机制
+    require('./find.js')     后缀可省略
+        1,根据模块路径一步一步的找，然后引入模块
+        2，后缀省略，先在当前文件夹下找同名文件find.js
+        3，找不到js文件就再找同名文件夹find,找到同名文件夹find就再找里面的package.json里面的main入口文件
+        4，找到main入口就执行main入口指定的js文件，如果入口不存在或者没有json文件就执行find文件夹下的index.js文件
+        5，如果连index.js文件都不存在就直接报错
+
+        注：json文件的main入口指定的路径权重最大。当index和main指定文件同时存在而且不重名时优先使用main指定的js文件
+
+
+
+
+    require('find');        没有路径也没有后缀，只写模块名字
+        1，Node.js会假设他是系统模块，查找到就执行，
+        2，没有找到就会去node_modules文件夹中，看是否有该名字的JS文件
+        3，没有同名文件就会查找是否有同名文件夹，有就进去执行里面的index。js
+        4，没有index.js就去package.json中查看模块中main选项的入口文件
+        5，main选项没有或者main选项入口指定的文件不存在就报错
+        注：同样权重是main大，同时存在优先执行main入口
+
+
+
+
+创建web服务器
+    //引用系统模块
+    const http=require('http');
+    //创建web服务器
+    const app=http.createServer();
+    //当客户端发送请求的时候
+    app.on('request',(req,res)=>{
+        //响应
+        res.end('<h1>xxx<h1>');
+    });
+    //监听3000端口,其他端口也行，只要不被别的软件使用就行了
+    app.listen(3000);
+    console.log('服务器启动完毕');
+
+    本机访问这个服务器使用localhost:3000端口号来启动
+
+
+
+http协议：
+    在响应阶段req数据中储存了基本上所有的客户端操作的请求
+    form表单属性：
+        1，moethod  提交的数据的方式 get/post
+        2，action   表单提交的地址。服务器地址。localhost:3000
+
+    
+请求报文：
+    req.url         获取请求地址：拿到客户端请求的不同地址进行不同的操作
+    req.headers     获取请求报文
+    req.method      获取请求方法
+    例： app.on('request',(req.res){
+        req.url;
+        req.method;
+        req.headers;
+    })
+
+    注：想要获取headers中某个具体的属性用数组方式,如：req.headers['accept']
+
+
+
+
+响应报文：res（respond的缩写）
+    1，响应码复习： 200ok：成功  404：服务器资源找不到   500：服务器语法错误  400：客户端请求有语法错误  301:重定向
+    2，内容类型
+        -text/html   返回html文件类型，以下同理
+        -text/css
+        -application/javascript
+        -application/json
+        -image/jpeg
+
+    res.writeHead(staus,obj)    
+    obj里面有个content-type,之前res.end输出的响应内容是纯文本，写标签没用，想要标签生效。将内容改为html
+    'content-type':'text/html;charset=utf8' 告诉浏览器返回的是html的内容，
+
+
+
+请求参数：
+get参数和post参数
+    在node里面提供了url内置模块快速操作get参数。不用像原生js慢慢写
+
+    var url=require('url'); 该模块提供了一个parse方法()..返回值是一个包含了端口号，域名，路径，等各种数据
+    query:包含不带问号的参数地址        xxx=yyy&zzz=ddd
+    search：带问好的参数地址            ?xxx=yyy&zzz=ddd
+    pathname：不带参数的地址            如https://www.baidu.com
+    path：带参数的地址                  https://www.baidu.com?xxx=yyy&zzz=ddd
+
+
+    参数1：解析的url地址
+    参数2：是否将里面的查询字符串转换成对象,拿到对象后在通过query属性拿到地址栏后面参数
+    
+    let que=url.parse(req.url,true).query;  就拿到地址栏的参数了。query是属性，他的值传true就被解析成对象
+
+
+
+
+post参数是通过事件方式接收，而且post数据理论没有上限，所以不是一次性接收的，通过两个事件处理
+    data：req.on('data',()=>{...})
+    end： req.on('end',()=>{...})
+        有请求参数传递的时候会触发data事件，而当参数传递完之后触发end事件
+
+    数据也是属于请求的一种，所以给req绑定事件
+        let postdate='';
+        req.on('data',date=>{
+            postdate+=date;
+        });
+        req.on('end',()=>{
+            console.log(postdate)
+        });
+    每次都会传递一个数据拼接，拼接完毕之后end事件输出
+
+
+post请求并不是在地址栏，所以不能使用url模块，但是node提供了querystring模块。
+    同样该模块也是有解析parse()方法
+    使用该模块解析的字符串就变为键值对形式供我们使用了，如:querystring.parse(postdate)
+
+
+
+
+静态资源
+    服务器端不需要处理，可以直接响应给客户端的资源就是静态资源：css，javascript，image文件
+    简单粗暴的方法就是拿到输入路径，然后在路径前面拼接上本地磁盘的相对路径使用readfile读取文件响应给客户端
+    获取相对路径使用__dirname
+
+    拼接路径时最好引入path模块来拼接路径，这样不容易出错
+
+
+
+动态资源
+    根据不同的响应地址读取不同的文件
+
+一个实例：
+    const http=require('http');
+    const url=require('url');
+    const path=require('path');
+    const fs=require('fs');
+    const app=http.createServer();
+    app.on('request',(req,res)=>{
+        let pathname=url.parse(req.url).pathname;
+        let realpath=path.join(__dirname,'public'+pathname);
+
+        fs.readFile(realpath,(error,result)=>{
+            if(error!=null){
+                res.writeHead(404,{
+                    'content-type':'text/html;charset=utf8'
+                })
+                res.end(404，数据响应失败);
+                return;
+            }
+            res.end(result);                      //将刚才结果响应到客户端
+        });
+    });
+
+
+问题1，上述加载页面遇到页面的link或者src标签会向服务器发送一个请求读取文件，但是，本次读取的可能是js，css，img任何文件
+这时设置content-type为什么都不合适。只能去动态识别读取的内容
+
+
+解决办法：第三方模块mime
+    该模块会根据请求的路径分析出所请求的资源的类型，然后将类型通过返回值返回。
+    使用该模块下的gettype方法：
+    let type=mime.getType(realpath); 再将返回值type设置为响应数据类型
+    即：res.writeHead(200,{
+        'content-type':type
+    })
+
+
+
+
+异步API
+    由于异步操作上一步未执行完或者正在执行就加载别的代码了，所以如果通过return来拿到结果给别的代码调用是拿不到的
+    只能通过回调函数来获取结果
+
+
+在node中代码执行分同步执行区，和异步执行区。在代码加载时首先执行同步执行去，然后再执行异步执行区。
+    中间遇到一个回调函数就将一个回调函数放到回调函数执行区，进行排队。
+
+
+
+
+实例：比如读取一个文件之后要输出文件读取结果
+    fs.readFile('./xxx.text',(err,res)=>{});
+    console.log('读取的结果');
+    显示，结果肯定是undifind，输出结果的时候文件都还未读取。
+    1，将输出代码放到回调函数里面。
+        问题：当有需求是依次读取a文件，b文件，c文件等等操作时，会造成大量的回调地狱
+    
+
+    解决：
+        2,promise(es6异步编程方法)
+            本身并无特殊结构，只是将回调地狱显示分开而已。让可视性变得友好
+            let p=new promise((resolve,reject)=>{
+                resolove(成功);/reject(失败);
+            })
+            p.then(result=>console.log(result))
+            .catch(error=>console.log(error))；        //node 允许链式编程这两步
+
+        实例：function p(){
+            return new promise((resolve,reject)=>{
+                fs.readfile('./1.text','utf8',(err,result)=>{
+                    resolve(result);
+                })
+            })
+        }     
+
+        function p1(){....} 
+
+        p().then((xxx)=>{
+            console.log(xxx);
+            return p1();        返回promise对象后续接着调用then方法。
+        }).then(.....)
+
+
+
+缺点：以上代码有点臃肿
+    ES7中新增了异步函数，解了所有异步函数嵌套臃肿问题.
+    在普通函数前面加上异步函数关键字async就使函数变成了异步函数。
+
+    const fn=async()=>{};
+    async function func(){};
+    注：异步函数默认的返回值是promise对象，而不是正常函数的undifind
+
+
+
+    异步函数内部await关键字
+        1，只能出现在异步函数中，
+        2，后面只能跟promise对象。暂停异步函数的执行，等待promise对象返回结构再执行下一步
+        例；async function run(){
+            let a=await p1();           //这里p1异步函数如果没有执行完毕，await接收不到promise返回值就会一直暂停后面代码。
+            let b=await p2();           //等待当前代码执行完毕
+            let c=await p3();
+        }
+
+
+
+总结：  1，使用return 关键字进行结果返回，结果会被包裹在promise对象中，return代替了resolve方法
+        2，在异步函数内部使用throw关键字抛出异常，
+        3，调用异步函数再链式调用then方法和catch方法获取执行结果和错误信息
+        4，await关键字代替了原来的回调函数。使得同步的代码变成了异步的代码
+
+
+
+
+注：正常代码中如fs.readFile()操作是通过操作返回值进行对文件的操作，他的返回值是个普通对象
+    而promise操作的不是普通对象，所以promise在node中是没法使用的。对此，node提供了一个方法。
+
+    首先引入util模块，该模块下有一个方法promisify。使用该方法对现有对象进行包装，让其返回promise对象。实例
+    const fs=require('fs');
+    const promisify=require('util').promisify           //拿到模块下的promisify方法
+    const readfile=promisify(fs.readfile);              //将readfile读取文件方法改造为返回promise对象
+    async function func(){
+        let r1=await readfile('./1.text','utf8')        //等待读取完毕1.text再进行下一个读取文件操作
+        let r2=await readfile('./2.text','utf8')
+        console.log(r1)
+        console.log(r2)
+    }
+    run();
+
+
+
+
+
+
+node全局对象（在node中是没有DOM和BOM的）
+    在浏览器中全局对象是window，而在node中全局对象则是global
+    global下有以下方法：
+    1，console.log()            在控制台输出
+    2,setTimeout()              设置延时器
+    3,clearTimeout()            清楚延时器
+    4,setInterval()             设置定时器
+    5,clearInterval()           清楚定时器
+
+
+
+数据库：MongoDB
+    术语
+    -database：     数据库，mongodb中可以建立多个数据库
+    -collection     集合，一组数据的集合，可以理解成JavaScript中的数组
+    -document       文档，一条具体的属性，理解成js中的对象
+    -field           字段，文档中的属性名称，可以理解成JS中的对象属性
+
+
+
+使用node操作mongoDB数据库需要依赖node第三方包mongooose
+使用npm install mongoose命令下载
+
+
+启动mongoDB服务
+    使用net star mongoDB启动数据库
+    关闭服务使用 net stop mongoDB数据库
+
+
+数据库连接(在mongo里面是不需要创建数据库的，如果连接的数据库不存在他会自动创建)
+    mongoose.connect('mongodb://localhost/xxx')      //要连接数据库的地址
+    .then(()=>console.log(连接成功))
+    .catch(error=>console.log(连接失败,error));
+
+    数据库的地址格式：mongodb协议//数据库ip地址/数据库名字
+    注：新版本连接参数多了一个{useNewurlparser:true}
+
+
+
+
+
+创建集合：数据的操作是在集合当中
+    1，对集合设定规则           使用Schema方法设定规则
+    2，创建集合                使用model方法创建集合
+    实例：
+    //设定集合规则
+    const rule=new mongoose.Schema({
+        name:string,
+        job:string,
+        sex:Boolean
+    });
+
+    //使用集合规则创建集合
+    const jihe=mongoose.model('Jihe',rule);   
+    //要求创建的时候首字母大写，mongo实际创建的是jihes，后面还有s表示复数，而且返回值是一个构造函数!!
+
+
+
+集合创建mongo中并不会有数据库，只有当数据库中有数据才会真正创建数据库
+    创建文档：就是向集合中插入数据
+    1，创建集合实例
+    2，掉用实例对象下的save方法将数据保存到数据库中
+    如：
+    const people=new jihe({
+        name:张三，
+        job：打鱼的，
+        sex：ture
+    });
+    people.save();              //调用save方法保存即可插入完毕
+
+
+总结：mongodb步骤
+    1，连接数据库
+    2，创建集合规则             //Schema方法
+    3，使用集合规则创建集合     //model方法
+    4，为集合插入数据          
+    5，保存插入的数据           //save方法
+
+
+
+
+
+第二个创建文档方法：        //在集合的构造函数下有一个create方法:两个参数：数据和回调函数
+
+    create()方法创建文档
+        jihe.create({
+            name:张三，
+            job：打鱼的，
+            sex：true
+        },(error,doc)=>{
+            创建成功error为null，doc为成功数据
+            失败error为错误信息，doc为空
+        })
+
+
+    该方法同样支持promise操作简化代码可读性
+        jihe.create({
+                name:张三，
+                job：打鱼的，
+                sex：true
+            })
+        .then(doc=>{....})
+        .catch(err=>{.....})
+    上述为增加文档全过程
+
+
+
+将现成的数据插入到数据库
+    mongoimport  -d数据库名称 -c集合名称 -file导入的数据文件
+    但是这个命令要加入环境变量path中才行，不然无法执行
+
+
+
+
+查询文档:集合下有个find()方法。专门用来查找文档的,返回值是一个promise对象
+
+    jihe.find({查找条件}).then(res=>{.....})
+    根据条件查找文档（条件为空则查找所有文档）。返回文档集合是一个数组，数组中包含多个对象
+
+
+    findOne() 默认查找第一条数据，添加参数改变查找条件，但是他返回的是一个对象，而不是数组
+
+
+
+
+
+    范围查询；如大于多少小于多少
+    find( { age:{$gt:20,$lt:50} } ).then(result=>console.log('result'))     查找age大于20小于50的
+
+    包含匹配
+    find( { job:{$in:['打鱼的'] } } ).then(result=>console.log('result'))
+
+
+
+    选择要查询的字段
+    find().select('name age sex').then(result=>console.log('result'))
+    //多个字段间要用空格隔开,如果不想查询哪个字段在前面写上负号 如-age  代表不查询age
+
+
+
+    对字段进行排序
+    find().sort('age')升序          find().sort('-age')降序排序
+
+
+
+    skip：跳过多少条数据    
+    limit限制查询数量,只显示多少条      //在数据分页的时候有用
+
+    find().skip(3).limit(3).then(result=>console.log('result'))
+
+
+
+
+
+删除文档
+    fondoneanddelete({name:'张三'})    删除匹配的第一个文档，并返回删除的文档
+
+    deleteMany({  })          删除多个文档,返回值是两个属性的对象，属性n是删除数量，属性ok代表删除成功
+
+
+
+
+更新文档（修改操作）    //也是返回一个promise对象
+    updateOne({name：张三}，{name:李四}).then(result=>console.log('result'))        一次只修改一个
+    updateMany({查询条件},{更改的值})               一次修改多个
+
+
+
+
+
+
+
+mongoose验证：在创建集合规则时，我们可以设置当前字段的验证规则，验证失败数据就插入失败
+    required：true  必传字段
+    实例：new mongoose.schema({
+        name:{
+            type:string,
+            require:true        //表示name为必传项，不传则直接报错
+            }
+        age:.....
+    })
+    在这里require还可以是一个数组[ture,'xxx'],第一个参数为true表示必传，第二个参数是自定义的错误信息
+
+    minlength/maxlength：所传入的字段的最小长度和最大长度。
+    实例：name:{
+            type:string,
+            require:true，
+            minlength:2,
+            maxlength:5                     //该字段必传，且最小长度2，最大长度5
+            }         
+    如：传入 name:asddasdad   报错超过长度5     //同样长度也可以传递数组自定义错误信息
+
+    trim：true  //去除字符串两边的空格
+
+
+    min/max:针对数字。传入的数字最小值和最大值
+
+
+    注：有些选项需要可选可不选，当不传递参数进来时希望他使用默认值。使用default。例：
+        day:{
+            type:Date,
+            default:Date.now        //当传递时间进来时使用传递的时间，没有传递时间就获取当前时间，当作默认值传递进来
+        }
+
+    
+    enum:规定传递的参数必须为哪些内容，如：
+        msg{
+            type:String,
+            enum:['html','css','JS','node','java']
+        }
+            //传递数据的时候msg就只能传递enum中规定的信息，如传递c++，则直接报错.
+
+
+    以上验证规则虽然多但是并不一定全能，所以mongoose提供了自定义验证器validator
+        实例：
+        validate:{
+            //该验证器有一个函数属性
+
+            validator:value=>{
+                //返回布尔值，true验证成功
+                //false验证失败
+                value && value.length<6     //判断value参数是否存在并且长度是否小于6
+            },
+            //自定义错误信息
+            msg:'传递的值不符合验证规则'
+        }
+
+
+
+集合关联：
+    比如文章和用户进行关联，给文章的作者属性添加用户_ID，使用populate方法来进行关联集合查询
+    _id的固定用法：Types.ObjectID   表示id属性
+    关联示例：
+        //用户集合
+        const user=mongoose.model('user',new mongoose.schema({
+            name:{
+                type:string                     //这里将创建集合规则的步骤放到了创建集合这里
+            }
+        }))
+    const post=mongoose.model('post',new mongoose.schema({
+        title:{type:string}
+        //使用id将文章集合和作者进行关联,ref是要关联的集合的名字
+        author:{type:mongoose.schema.Types.ObjectID,ref:'user'}
+    }))
+    //查询
+    post.find()
+        //输入关联的字段,这里关联的是author属性
+        .populate('author')
+        .then((err,res)=>{........})
+
+
+
+模板引擎：很多字符串拼接的操作过于繁琐和难维护。可以使用模板引擎来解决
+    art-template：该模板引入时候的返回值就是一个方法。该方法有两个参数
+        参数1：模板的路径
+        参数2：模板中要进行替换的数据
+
+    
+模板语法：
+    标准语法：{{ 数据 }}
+    原始语法：<%=数据 %>
+
+    输出语句
+        标准：<h2>{{ value }}</h2>
+            <h2>{{ a+b }}</h2>
+
+        原始：<h2><%=value %></h2>
+            <h2><%=a+b %></h2>
+
+    默认情况模板引擎是不会解析标签的，因为万一标签中引入了一些文件或者恶意代码不安全。如果非要引用标签，使用原文输出
+        标准：{{ @数据 }}
+        原始：<%- 数据 %>
+
+
+
+
+多条件判断
+    {{ if 条件 }}........{{else if 条件}}.............{{/if}}
+    原始语法：和标准语法的区别是<% if(判断语句){ %>....<% } %>  优点是这里可以写入各种js代码，开始和结尾的大括号不能省
+示例：
+    <% if(age>10){ %> 
+        年龄大于10 
+        <% }else if(age>18){ %>
+        年龄大于18
+        <%%>
+    <% } %>
+
+
+
+
+
+循环each    原始语法就不写了。原始语法都是在符号里面写上原始的循环语法等等
+    {{ each 数据名 }}...{{/each}}
+    示例：
+        {{ each date}}
+            //循环的索引和值
+            {{ $index }}    {{ $value }}
+        {{/each}}
+    注：date就是引入模板的参数2名字
+
+
+
+
+子模板：将页面公共区块抽离到单独的文件中
+    {{ include '模板路径'}}   //原始语法include是方法而不是关键字
+    示例：
+        <body>
+        {{ include 'public/common/head'}}
+        <div>xxx...</div>
+        <div>xxx...</div>
+        {{ include 'public/common/foot'}}
+        </body>
+
+
+
+
+模板继承：可以将网站的html骨架抽离到单独的文件中，其他页面模板可以继承骨架文件，挖坑添加自己独有的头部，css文件等。。
+    在html骨架中使用block来进行挖坑预留位置，使别的页面填充自己独有的代码
+    示例：
+        <head>.....
+            {{ block 'head'}} {{ /block}}       //预留的时候声明的名字用以区分坑位，而不是随便乱填
+        <head>
+        <body>
+            ....
+            {{ block 'body'}} {{ /block}}
+        <body>
+    填充：使用extend来进行引入,同样用block进行填充
+        {{ extend './public/common/首页模板'}}      //自结束
+        {{ block 'head'}} <link rel="stylesheet" href="public/mystyle.css"> {{ /block }}
+        {{ block 'body'}} <div>这里是底部<div> {{ /block }}
+
+
+
+
+模板配置：
+    1，向模板中导入变量，固定写法：
+        template.defaults.imports.自定义属性名=引入的方法；        //最好直接用导入的方法来命名，不容易混淆
+
+    2,设置模板的跟目录，之后渲染页面的时候就不需要写路径了。他会自己去设置的目录中去找文件
+        示例：
+        template.default.root=path.join(__dirname,public,common)
+        设置该语句后后续模板渲染都去该文件下找模板
+
+    3，配置模板默认后缀
+        template.defaults.extname='.html'
+        后续引入模板可以省略后缀名，例：
+        const html=template('01',{
+            name：张三
+        })
+
+    
+
+
+第三方模块router：用来实现路由简化页面代码       //类似express
+    1，获取路由对象
+    2，调用路由对象提供的api创建路由
+    3，启动路由，受路由生效
+    示例：
+        const getrouter=require('router')
+        const router=getrouter()
+        router.get('/index',(req,res)=>{                //接受get请求
+            res.end(....)
+        })
+        router.post('/list',(req,res)=>{                //接受post请求
+            res.end(....)
+        })
+        server.on('request',(req,res)=>{                //启动路由开始接受请求
+            router(req,res,(req,res)=>{
+                //router方法下有个回调函数是必选
+            })
+        })
+
+    
+
+静态资源开放
+    第三方模块serve-static
+    1，引入模块获取创建静态服务功能的方法
+    2，调用方法创建静态资源服务和指定静态资源目录
+    3，启用静态资源服务功能
+    示例：
+        const serverstatic=require('server-static')
+        const server=serverstatic(path.join(__dirname,'public'))
+        server.on('request',(req,res)=>{
+            server(req,res,(req，res)=>{
+                //必选回调函数。
+            })
+        })
+
+
+第三方模块时间模块
+    dateformat：模板中是不能调用方法的，使用时间模块方法要先将变量导入
+    template.defaults.imports.dateformat=dateformat;
+    然后就可以在模板中使用方法了，例
+        {{ dateformat($value.enterdate,'yyyy-mm-dd') }} 设置时间格式几个年几个月几个天
+    时间模块格式：每个y表示一个年，一个m表示一个月 如 yyyy-mm-dd=2020-02-15
+
+
+
+
+express框架：
+    1，简化了路由定义
+    2，获取http请求参数进行了简化处理
+    3，提供了中间件机制
+    4，大量第三方中间对功能进行扩展
+
+
+
+在express中创建服务器：
+    //引入模块
+    const express=require('express')
+    //创建服务器
+    const app=express()
+
+    app.get('/',(req,res)=>{
+        send()
+        //1,send方法内部会检测响应内容的类型
+        //2，会自动设置http状态码
+        //3，会帮我们自动设置响应的内容类型及编码
+    })
+    //监听端口
+    app.listen(3000)
+
+
+
+中间件：next()交出中间件当前的控制权，向下再次进行匹配
+    get/post
+
+    use中间件
+        第一种方法不写参数app.use((req,res)=>{...}) 只要请求发过来就匹配这个中间件
+
+
+中间件应用：
+    1，路由保护，拦截请求，示例：
+        假设登录后login为true，否则为false，当请求后续页面的请求发起时进行判断，
+            app.use('/admin',(req,res,next)=>{
+            if(login){
+                next()
+            }else{
+                send(你还没登录，请返回重新登录)
+            }
+            })
+
+
+    2,网站维护公告
+        在所有中间件最上方添加一个无参数中间件，拦截所有请求达到公告功能
+            app.use((req,res)=>{
+                send('网站正在维护当中，请明天再登录.....')
+            })
+
+
+    3,自定义404页面
+        在所有路由的最后面同样添加一个无参数中间件，所有过来的都能匹配到
+            app.use((req,res)=>{
+                res.status(404).send('你访问的页面失联了，别访问了')
+            })
+
+
+错误处理中间件
+    示例：
+    app.get('/admin',(req,res)=>{
+        throw new Error('这是手动抛出的错误')
+    })
+    app.use((err,req,res,next)=>{
+        res.status(500).send(err.message);
+    })
+    //这是同步处理错误中间件，而异步的时候错误传递不下来
+
+    注：express中提供了一个构造错误函数Error,而抛出错误函数依旧是throw关键字
+
+
+    异步处理错误中间件
+        app.get('/admin',(req,res,next)=>{
+            fs.readfile('不存在的路径',(err,date)=>{
+                if(err){
+                    next(err)
+                }
+            })
+        })
+        app.use((err,req,res,next)=>{
+            res.status(500).send(err.message);
+        })
+    
+    错误补救
+        可以使用try。。。。catch。。来对错误进行捕获和补救
+        将可能发生错误的代码放到try中，在catch中放入补救的代码或者直接放错误信息
+            注：他只能捕获同步和异步函数的错误，其他类型的api错误无法捕获，比如回调函数的错误
+
+        
+构建模块化路由：
+    1，引入express模块，express下还有很多方法。比如express.Router()方法创建路由对象
+    示例：
+    //调用Router方法创建一个路由
+    const home=express.Router();
+
+    //当用户请求/home地址的时候调用home路由对请求进行处理
+    app.use('/home',home)
+
+    //在home路由下继续创建路由
+    home.get('/index',()=>{
+        res.send('你来到了首页')
+    })
+        //这样就将路由进行了分级，每一级路由主管不一样，类似树状图
+
+
+get请求参数的获取
+    使用query方法get请求中的参数自动会被解析成对象。
+    示例：
+        app.get('/admin',(req,res)=>{
+            req.query                   //拿到就是一个经解析后的对象
+        })
+
+    post请求参数获取
+        得使用第三方包body-parser：当请求参数post有参数时他会将参数解析好作为body放到req下
+        示例：
+            //拦截所有请求,对参数进行处理
+            //如果值为true使用qs模块进行处理参数
+            app.use(bodyParser.urlencoded({extended:false}))
+            //通过body属性来获取参数
+            app.post('/ad',(req,res)=>{
+                res.send(req.body)
+            })
+
+
+express还可以通过路由参数对请求地址进行美化
+    示例：
+        app.get('/find/:id',(req,res)=>{        //这里的冒号id实际只是一个占位符，并且不传id是匹配不到这个路由的，这点和？不一样
+            console.log(params)                 //id:123
+        })
+        请求地址：localhost:3000/find/123
+
+
+    
+express处理静态资源
+    通过内置的express.static方法可以托管静态文件
+    1,拦截所有请求，
+    2，判断请求是否是静态资源，如果是静态资源则响应资源，否则传入下一个中间件
+    示例：
+        app.use(express.static(path.join(__dirname,'public')))   //这样在地址栏就能通过路径访问实际的文件
+        也可以对公共资源指定一个虚拟目录
+        app.use('/index',express.static(path.join(__dirname,'public')))
+        //这样在访问文件的前面要加上/index才能正常访问文件
+
+    
+模板引擎（在express框架中）
+    为了和express框架结合，模板引擎在原有基础上二次封装了express-art-template
+    使用模板引擎时art-template和express-art-template都要下载
+
+    在app下有一个方法engine('art',require('express-art-template'));
+    用来告诉框架使用的是哪个模板引擎，第一个参数是模板的后缀，第二个参数是使用的模板引擎
+    
+    app.set('views',path.join(__dirname,'view'))
+        告诉express框架模板文件的位置,默认是view文件夹      //第一个views是告诉express框架模板存放的位置，第二个是文件夹的名字
+    
+    app.set('view engine','art')  设置渲染模板时的文件后缀，默认的是art
+
+
+
+
+    配置好渲染位置，渲染文件，渲染模板后就可以使用res下的render方法。
+        app.get('/',(req,res)=>{
+            res.render('index'，{。。})
+        })
+        该方法直接帮我们找到文件位置，告诉框架是哪个模板，哪个模板文件，然后进行渲染响应给客户端
+        第二个参数是要传递的数据
+
+
+
+在项目中总会有一段公共代码，几个或者全部页面都有这段代码
+    app.loacls：将变量设置到这个对象下面，这个数据在所有模板中都可以获取到
+    示例：app.locals.user=[{
+        name:'zhangsan',
+        age:19
+    },{
+        name:'lisi',
+        age:32
+    }]
+        //所有模板都可以访问到user中的值，不需要再放到render的第二个参数中了
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+查node官网api中外文档都行
+
+url模块提供的三个方法：
+    url.parse(url,true)                   解析地址信息
+    url.format(urlobj)                    传递一个对象，将地址解析出来。和parse功能相反
+    url.resolve(from,to)                  将两段url解析成一个完整的url
+
+
+
+querystring模块
+    escape(str)                     将中文转成字符串
+    unescape(str)                   将字符产转为中文
+    parse(str)                      将字符串转成对象
+    stringify(obj)                  将对象转成字符串
+
+
+
+nodejS事件
+    示例：
+        const eventmitter=require('events')
+        class Player extends eventmitter{}
+        var play=new Player()
+        play.on('playe',(e)=>{           事件的绑定on，如果是once则不论几个emit都只触发一次
+            console.log('这是事件'${e});
+        })
+
+        play.emit('playe','xxx')        触发事件playe并且将xxx作为参数传递进去
+
+        on('date',()=>{})       输出传输触发
+        on('end',()=>{})        数据传输结束触发
+        on('error',()=>{})      程序出错触发事件
+
+
+
+正常情况是使用readfile来读取文件内容，但是当文件过大时会使程序崩溃掉，而stream模块就是来解决这个问题的
+    可以使用pipe或者链式使用pipe来读取文件流
+    const fs=require('fs')
+    var readstream=fs.createReadstream('date.json')
+    readstream.on('date',(e)=>{
+        ....
+    })
+
+
+    与之对应的还有写入文件流
+    var writeStream=fs.createWriteStream('date1.json')
+
+
+    

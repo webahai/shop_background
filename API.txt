@@ -1,0 +1,199 @@
+0.图片公告资源接口地址：
+    例：
+        http://localhost:5000/public/img/1.png      大图地址
+        http://localhost:5000/public/avater/2.png   头像地址
+
+
+
+1.登录信息数据返回接口   localhost:5000/login 
+    method：get
+    参数：username      string
+        password        string
+    返回数据格式：
+        status  0|1
+        data：{
+                avater: "444"
+                password: "123456"
+                quanxian: "1"
+                username: "1111"
+                _id: "6051f2a2cda28e8b493af3a8"
+        }
+
+
+3.查询商品列表  localhost:5000/goods 
+    method：get
+        参数：parentId
+        返回格式：
+            status: 0,
+            data: [
+                {
+                    name: "家用电器"
+                    parentId: "0"
+                    _id: "605afb9ba3d82509f063f7b2"
+                }
+            ],
+            message: '查询商品成功'
+            
+
+4.添加商品列表  localhost:5000/addgoods
+    get
+    参数：
+        name：
+        parentId
+        返回数据：status 0|1
+
+5.修改商品列表 localhost:5000/updategoods
+    method：get
+        参数：parentId  name
+        返回格式：
+            status：0|1
+            message：错误信息|数据修改成功
+
+
+6.获取商品数据接口 localhost:5000/shop?pageNum=1&pageSize=2
+    method：get 
+    参数：当前页数pageNum ，每页显示数据pageSize
+    返回数据：
+        {
+            status:0|1          成功拿到数据或失败
+            data：[]            拿到的数据
+            length：            总数据的长度
+        }
+
+7.搜索商品数据接口 /shop/search?pageNum=1&pageSize=2&searchtype=searchName&key=荣耀
+    method：get
+    参数：：pageNum，pageSize用于数据分页
+        searchtype：查询的类型（根据desc还是name查询）
+        searinfo：查询的关键字
+    返回数据
+        status：0|1
+        data：数据对象
+        message：错误信息
+
+8.商品上架下架状态请求 http://localhost:5000/shop/stateupd?_id=6062bdfda52cea6d394e4360&status=0
+    method：get
+    参数:_id       status
+    返回数据格式：
+        status 0|1      是否修改成功
+        message：错误信息|数据修改成功
+
+        
+9.图片上传接口  http://localhost:5000/upload  (多个文件上传)
+    router.post('/upload', multer({
+        //上传文件保存到哪个目录
+        dest: 'public/image'
+        //限定上传的文件是任何类型并且可以多个    
+    }).any(), (req, res) => {
+        /*
+    [{  
+        //数据返回格式
+            "fieldname": "file",
+            "originalname": "1.png",
+            "encoding": "7bit",
+            "mimetype": "image/png",
+            "destination": "public/image",
+            "filename": "e099d7e03a277610dce5ae072034e1dc",
+            "path": "public\\image\\e099d7e03a277610dce5ae072034e1dc",
+            "size": 81422
+        }]
+    */
+        let oldname = req.files[0].path
+        let newname = req.files[0].destination + '/' + req.files[0].originalname
+        fs.renameSync(oldname, newname)
+        res.send(req.files)
+    })
+
+10。添加商品数据接口    http://localhost:5000/addshop
+    method:post
+    参数：
+        name: String,
+        status: String,
+        price: Number,
+        desc: String,
+        info:String,
+        parentId:String,
+        imgUrl: [{
+        name:String,
+        url:String
+    }],
+    返回格式：
+        status：0|1
+        messa：提示信息
+
+11.图片删除接口  http://localhost:5000/delate/image
+    method:post
+    参数：name
+        返回数据：{
+            status：0|1
+            message：错误信息
+        }
+
+12。创建角色接口 http://localhost:5000/createrole
+    method:get
+    参数：
+        name:角色名字
+    返回格式：
+        status：0|1
+        message：提示信息
+
+13.角色授权接口  http://localhost:5000/roleset
+    method:get
+    参数:
+            menus,      //权限列表
+            _id,        //当前角色id
+            auth        //当前授权人
+    返回数据：
+        status 0|1
+        message：提示信息
+
+
+14.用户信息返回接口  http://localhost:5000/usersList
+    method:get
+    返回格式：
+        status：0|1
+        message：提示信息
+        data:{
+            users:[...],
+            roles:[...]
+        }
+
+15.删除用户接口  http://localhost:5000/userdeleter
+    method:post
+    参数：_id
+    返回格式：
+        status：0|1
+        message：提示信息
+
+16.注册用户接口  http://localhost:5000/register
+    method：post
+    参数：
+            username,
+            password,
+            phone,
+            email,
+            role_id
+    返回格式：
+        status：0|1
+        message：提示信息
+
+17,修改用户接口  http://localhost:5000/userupdate
+    method：post
+    参数：
+            _id,
+            username,
+            phone,
+            email,
+            role_id
+    返回格式
+        status：1|0
+        message：提示信息
+
+18.获取角色接口  http://localhost:5000/role
+    method：get
+    参数：{} | _id
+    返回数据格式：
+        status：0|1
+        messa：role数组  | _id对应的角色
+
+
+        
